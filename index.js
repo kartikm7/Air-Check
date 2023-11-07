@@ -36,19 +36,56 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(express.static(path.join(__dirname, 'public')))
 
 app.get("/", async (req,res) =>{
-    let query = "night city"
-    // try {
-    //     client.photos.search({ query, per_page: 1 }).then(photos => {
-    //         let pexels = JSON.stringify(photos)
-    //         console.log(photos);
-    //         res.render("index.ejs", {bgImage: pexels})
-    //     })
-    // } catch (error) {
-    //     res.render("index.ejs", {error: error.message})
-    // }
-
-    res.render("index.ejs")
+    let query = "india night"
+    try {
+        client.photos.search({ query, per_page: 1 }).then(photos => {
+            let pexels = (photos.photos[0])
+            console.log(pexels);
+            res.render("index.ejs", {bgImage: pexels.src.original})
+        })
+    } catch (error) {
+        res.render("index.ejs", {error: error.message})
+    }
 })
+
+
+function getAQIDescription(aqi) {
+    let description;
+    let precautions;
+  
+    if (aqi >= 0 && aqi <= 50) {
+      description = 'Good air quality. Enjoy outdoor activities!';
+      precautions = 'No precautions needed.';
+    } else if (aqi > 50 && aqi <= 100) {
+      description = 'Moderate air quality. Most people can enjoy outdoor activities.';
+      precautions = 'People with respiratory or heart conditions should reduce prolonged or heavy exertion.';
+    } else if (aqi > 100 && aqi <= 150) {
+      description = 'Unhealthy for sensitive groups. People with respiratory or heart conditions, children, and older adults should reduce prolonged or heavy exertion.';
+      precautions = 'People with asthma, heart disease, and respiratory conditions should be cautious.';
+    } else if (aqi > 150 && aqi <= 200) {
+      description = 'Unhealthy air quality. Everyone may begin to experience health effects; members of sensitive groups may experience more serious health effects.';
+      precautions = 'People with respiratory or heart conditions should avoid prolonged outdoor exertion.';
+    } else if (aqi > 200 && aqi <= 300) {
+      description = 'Very unhealthy air quality. Health alert: everyone may experience more serious health effects.';
+      precautions = 'People with respiratory or heart conditions should avoid outdoor activities.';
+    } else if (aqi > 300) {
+      description = 'Hazardous air quality. Health warning of emergency conditions: the entire population is likely to be affected.';
+      precautions = 'Everyone should avoid all outdoor activities.';
+    } else {
+      description = 'Invalid AQI value.';
+      precautions = 'N/A';
+    }
+  
+    return {
+      description,
+      precautions,
+    };
+  }
+  
+  // Example usage:
+  let aqi = 120;
+
+  
 
 
 app.post("/airCheck", async (req,res) =>{
@@ -57,10 +94,10 @@ app.post("/airCheck", async (req,res) =>{
     let pexels
     try {
         await client.photos.search({ query, per_page: 1 }).then(photos => {
-            pexels = JSON.stringify(photos.photos[0]);
+            pexels = (photos.photos[0]);
             return pexels
         })
-        console.log(pexels.url);
+        console.log(pexels);
         const response = await axios.get(apiUrl,{
             params:{
                 city: city
@@ -70,8 +107,9 @@ app.post("/airCheck", async (req,res) =>{
                 'X-RapidAPI-Host': 'air-quality-by-api-ninjas.p.rapidapi.com'
             }
         })
-        const result = JSON.stringify(response.data)
-        res.render("index.js", {cardImage:pexels, airData: result })
+        const result = (response.data)
+        const { description, precautions } = getAQIDescription(result.overall_aqi);
+        res.render("index.ejs", {cardImage:pexels, airData: result, city:city, desc: description, prec: precautions })
     } catch (error) {
         res.render("index.ejs", {error: error.message})
     }

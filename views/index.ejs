@@ -6,34 +6,58 @@
     <title>AirCheck</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700&family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <!-- <link rel="stylesheet" href="/styles/styles.css"> -->
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Bricolage+Grotesque:opsz,wght@12..96,700&family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Tulpen+One&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/styles/styles.css">
+
 </head>
 <body>
     <main class="container">
-        <img src="https://images.pexels.com/photos/1542620/pexels-photo-1542620.jpeg" width="200px" height="300px" alt="what" >
 
-        <div class="card" id="searchCard">
-
-            <% if (locals.cardImage) { %>
-            <img src="https://www.pexels.com/photo/brown-and-black-mosque-under-white-and-blue-cloudy-sky-1542620/" alt="" id="cardImage">
-            <p style="color: aliceblue;"><%= locals.cardImage.url%></p>
+        <div class="bothCards">
+            <div class="card" id="searchCard">
+                <img src="<%= locals.bgImage  %>" alt="background-image" id="cardImage">
+                <% if (locals.city) { %>
+                    <h1 class="cityName"><%= locals.city %></h1>
+                <% } else { %>
+                    <h1 class="cityName">AirCheck</h1>
+                    <% } %>
+                <form action="/airCheck" method="post" id="searchBar">
+                    <input type="search" placeholder="Enter a city" name="city" id="">
+                    <button type="submit"><i class="fa fa-search"></i></button>
+                </form>
+            </div>
+            <div class="card" id="airQuality">  
+                <% if(locals.airData){ %>
+                    <div class="airDiagnosis">
+                        <h1 class="airData"> AQI: <%= locals.airData.overall_aqi %></h1>
+                        <p>Diagnosis: <%= locals.desc %><p>
+                        <p>Precautions: <%= locals.prec %></p>
+                    </div>
+                <% } else{%>
+                    <div class="welcome">
+                        <h1>Welcome to AirCheck!</h1>
+                        <p>Stay informed about your local air quality in real-time. Simply enter your city's name, and you'll discover the current air quality index, complete with atmospheric data and stunning background images. Whether you're planning outdoor adventures or just want to breathe easy, AirCheck is your trusted source. <br> Explore with confidence, knowing you have the information you need at your fingertips.</p>
+                    </div>
                 <% } %>
-            <form action="/airCheck" method="post">
-                <input type="search" name="city" id="">
-                <button  type="submit">Submit</button>
-            </form>
+            </div>
         </div>
-        <div class="card">
-            
-        </div>
-        <p ><%= locals.error %></p>
+        <% if (locals.cardImage) { %>
+            <div class="photographerDetails">
+                <p>Photographer: <a href="<%= cardImage.photographer_url %>" target="_blank"><%= cardImage.photographer%></a></p>
+            </div>
+        <% } %>
     </main>
+
+
+    <% if (locals.cardImage) { %>
+        <script>
+            let imageURL = '<%= locals.cardImage.src.large %>';
+            console.log(imageURL);
+            let cardImage = document.getElementById("cardImage");
+            cardImage.src = imageURL;
+        </script>
+    <% } %>
     
-    <script>
-        let imageURL = '<%=locals.cardImage%>'
-        let cardImage = document.getElementById("cardImage")
-        cardImage.src = imageURL
-    </script>
 </body>
 </html>
