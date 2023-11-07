@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AirCheck</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700&family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- <link rel="stylesheet" href="/styles/styles.css"> -->
+</head>
+<body>
+    <main class="container">
+        <img src="https://images.pexels.com/photos/1542620/pexels-photo-1542620.jpeg" width="200px" height="300px" alt="what" >
+
+        <div class="card" id="searchCard">
+
+            <% if (locals.cardImage) { %>
+            <img src="https://www.pexels.com/photo/brown-and-black-mosque-under-white-and-blue-cloudy-sky-1542620/" alt="" id="cardImage">
+            <p style="color: aliceblue;"><%= locals.cardImage.url%></p>
+                <% } %>
+            <form action="/airCheck" method="post">
+                <input type="search" name="city" id="">
+                <button  type="submit">Submit</button>
+            </form>
+        </div>
+        <div class="card">
+            
+        </div>
+        <p ><%= locals.error %></p>
+    </main>
+    
+    <script>
+        let imageURL = '<%=locals.cardImage%>'
+        let cardImage = document.getElementById("cardImage")
+        cardImage.src = imageURL
+    </script>
+</body>
+</html>

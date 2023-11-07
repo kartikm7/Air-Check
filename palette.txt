@@ -1,0 +1,4 @@
+--jet: #303030ff;
+--night: #0F0F0Fff;
+--antiflash-white: #EDEFF0ff;
+--eerie-black: #242424ff;
